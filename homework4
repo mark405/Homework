@@ -1,0 +1,67 @@
+#угадай число
+import random
+right_number=random.randint(0,10)
+name = input('Введіть своє імя: ')
+print('Вгадайте число від 1 до 10. У вас три спроби.')
+attempt=0
+while attempt<3:
+    new_number=int(input("Введіть число: "))
+    attempt+=1
+    if new_number<right_number:
+        print(f'''Помилка. Ваша спроба невірна.
+		Підказка: задумане число більше за {new_number}.
+		Спробуйте ще раз! ''')
+
+    if new_number>right_number:
+        print(f'''Помилка. Ваша спроба невірна.
+		Підказка: задумане число менше за {new_number}.
+		Спробуйте ще раз! ''')
+    if new_number==right_number:
+        break
+if new_number==right_number:
+    print('Вітаємо,ви вгадали')
+if new_number!=right_number:
+    print(f'{name}, гра закінчена.Правильне число {right_number}')
+    
+    
+    
+#митниця
+list_with_names = []
+while True:
+    new_name = input('Хто перетинає кордон: ')
+    if new_name == 'END':
+        break
+    else:
+        list_with_names.append(new_name)
+dict={}
+for i in list_with_names:
+    if i in dict:
+        dict[i]+=1
+    else:
+        dict[i]=1
+print(dict)
+
+
+
+import random
+general=[]
+for j in range(3):
+    tmp = []
+    for i in range(4):
+       tmp.append(random.randint(0,10))
+    general.append(tmp)
+print(general)
+max_num=general[0][0]
+s=0
+for row in general:
+    for element in row:
+        s+=element
+        if element > max_num:
+            max_num = element
+print(f'Cумма всех элементов списка: {s}')
+print(f'Максимальное значение списка: {max_num}')
+s1=0
+for a in general[0]:
+    s1+=a
+print(f'Сумма элементов первого списка: {s1}')
+print('Минимальное значение второго списка:',min(general[1]))
