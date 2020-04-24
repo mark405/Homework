@@ -1,0 +1,57 @@
+Exercise 1
+
+#example
+import random
+
+list_with_numbers = list(range(10))
+new_list = []
+
+for i in list_with_numbers:
+    if not i % 2:
+        new_list.append(i + random.random())
+        #new_list.append(i)
+
+print(new_list)
+
+#1
+new_list1 = [int(i) + random.random() for i in range(10) if not i % 2 ]
+
+print(new_list1)
+
+#2
+new_list2 = list(range(0,10,2))
+print(list(map(lambda i: i + random.random(), new_list2)))
+
+Exercise 2
+
+#example
+import string
+
+sentence = "I am @ Python @ senior ^ pomidor"
+
+list_with_words = sentence.split()
+new_list = []
+
+for word in list_with_words:
+    if not word in string.punctuation:
+        new_list.append(word)
+
+print(new_list)
+#print(list_with_words)
+
+#1
+new_list1 = [symbol for symbol in sentence.split() if not symbol in string.punctuation]
+
+print(new_list1)
+
+#2
+print(list(filter(lambda i: not i in string.punctuation, list_with_words)))
+
+Exercise 3
+
+cort = [(1,1,1), (1,2,3), (-1,-1,7), (-3,-2,8), (0,0,0), (3,-4,-5)]
+
+print(sorted(cort, key = lambda elem: (elem[0] + elem[1]) + elem[2]))
+
+print(sorted(cort, key = lambda i: i[2]))
+
