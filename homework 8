@@ -55,3 +55,19 @@ print(sorted(cort, key = lambda elem: (elem[0] + elem[1]) + elem[2]))
 
 print(sorted(cort, key = lambda i: i[2]))
 
+Exercise 4
+
+dict = {'b':3, 'c':2, 'a':4, 'd':1}
+
+print(sorted(dict))
+
+print(sorted(dict, key = lambda i: dict[i]))
+
+Exercise 5
+
+import string
+
+a = string.ascii_uppercase
+alphabet = [i for i in a.split()]
+print(alphabet)
+
