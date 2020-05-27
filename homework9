@@ -1,0 +1,190 @@
+#задание номер 1
+
+import sqlite3
+from datetime import date
+
+conn = sqlite3.connect('py2base.db')
+                                            #подключение к базе данных
+cursor = conn.cursor()
+
+#создаем football_players
+cursor.execute("""CREATE TABLE IF NOT EXISTS football_players(ID INT,
+                                                                   first_name TEXT,
+                                                                   second name TEXT,
+                                                                   b_date DATE
+                                                                   )""")
+
+conn.commit()
+
+
+
+def football_players():
+    try:
+        global id_player
+        id_player = int(input('ID: '))
+        first_name_player = input('First name: ')
+        second_name_player = input('Second name: ')
+        b_date_player = input('Birthday date: ')
+
+        cursor.execute(f"SELECT ID FROM football_players WHERE ID = '{id_player}'")
+        if cursor.fetchone() is None:    #проверяем на наличие id в уже существующей таблице
+            cursor.execute(f"INSERT INTO football_players VALUES (?, ?, ?, ?)" ,(id_player,       #если id не было в таблице,добавляем введенные данные
+                                                                                 first_name_player,
+                                                                                 second_name_player,
+                                                                                 b_date_player))
+            conn.commit()
+            # print(f'Игрок с ID {id_player} успешно добавлен в команду')
+            # for value in cursor.execute("""SELECT * FROM football_players"""):
+                # print('---------- football_players----------')
+                # print(value)
+        else:
+            print(f'Игрок с ID {id_player} уже существует')
+            print('---------- football_players ----------')
+            for value in cursor.execute("""SELECT * FROM football_players"""):
+                print('--------------------------------------')
+                print(value)
+
+            football_players()    #если id уже существует,то повторяем функцию опять
+    except Exception:
+        print('ID должен состоять из цифр')
+        football_players()
+
+#создаем football_teams
+cursor.execute("""CREATE TABLE IF NOT EXISTS football_teams(name TEXT,city TEXT)""")
+
+conn.commit()
+
+def football_teams():
+    try:
+        global club_name   #делаем переменные глобальными
+        global start
+        club_name = input('Club name: ')
+        club_city = input('Club city: ')
+        start = date.today()    #дата началы карьеры игрока в клубе
+
+        cursor.execute(f"INSERT INTO football_teams VALUES (?, ?)", (club_name, club_city))     #добавляем данные в таблицу
+        conn.commit()
+        print(f'Игрок с ID {id_player} успешно добавлен в команду {club_name}')
+        # for value in cursor.execute("""SELECT * FROM football_teams"""):
+            # print('---------- football_teams----------')
+            # print(value)
+    except Exception as e:
+        print(e)
+
+# создаем player_in_team
+cursor.execute("""CREATE TABLE IF NOT EXISTS player_in_team(id INT,
+                                                            club TEXT,
+                                                            start_date DATE
+                                                            )""")
+
+conn.commit()
+
+def player_in_team():
+    cursor.execute(f"SELECT id FROM player_in_team WHERE id = '{id_player}'")
+    if cursor.fetchone() is None:
+        cursor.execute(f"INSERT INTO player_in_team VALUES (?, ?, ?)", (id_player, club_name, start))   #если id не было в таблице,то добавляем данные
+        conn.commit()
+        print('********** player_in_team **********')
+        for value in cursor.execute("""SELECT * FROM player_in_team"""):
+            print('------------------------------------')
+            print(value)
+    else:
+        print(f'Этот игрок уже играет в клубе {club_name}')
+        print()
+        print('********** player_in_team **********')
+
+        for value in cursor.execute("""SELECT * FROM player_in_team"""):
+            print('------------------------------------')
+            print(value)
+
+
+def deleter():   #функция удаление в случае надобности
+    cursor.execute("DROP TABLE IF EXISTS football_players")
+    cursor.execute("DROP TABLE IF EXISTS football_teams")
+    cursor.execute("DROP TABLE IF EXISTS player_in_team")
+
+    conn.commit()
+    print('База данных удалена')
+
+#deleter()
+
+
+if __name__ == '__main__':
+    football_players()
+    football_teams()
+    player_in_team()
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+import sqlite3
+
+conn = sqlite3.connect('py2base.db')
+cursor = conn.cursor()
+
+#задание номер 2
+def club():
+    club_name = input('Введите название клуба: ')
+
+    cursor.execute(f"SELECT club FROM player_in_team WHERE club = '{club_name}'")
+    if cursor.fetchone() is None:
+        print(f'Клуба {club_name} нет в базе данных')
+        club()
+    else:
+        print(f'Все игроки клуба {club_name}')
+        for value in cursor.execute(f"""SELECT first_name
+                                FROM football_players
+                                JOIN player_in_team
+                                ON football_players.ID = player_in_team.id
+                                WHERE club = '{club_name}'"""):
+            print('--------------------------')
+            print(*value)
+            print()
+
+#задание номер 3
+# топ 10 игроков по возрасту
+def players():
+    print('10 самых старших игроков в базе данных')
+    sql = cursor.execute("""SELECT first_name, second name, b_date
+                  FROM football_players
+                  ORDER BY b_date ASC
+                  LIMIT 10""")
+    for value in sql:
+        print('-------------------------------------')
+        print(value)
+
+
+#задание номер 4
+def id():
+    try:
+        print()
+        id_p = int(input('Введите ID игрока: '))
+
+        cursor.execute(f"SELECT id FROM player_in_team WHERE id = '{id_p}'")
+        if cursor.fetchone() is None:
+            print(f'Игрока с ID {id_p} нет в базе данных')
+            id()
+        else:
+            print('Информация об игроке')
+            print('-------------------------------------')
+            for value in cursor.execute(f"""SELECT f.first_name, f.second name, p.club
+                                        FROM football_players f
+                                        JOIN player_in_team p ON f.ID = p.id
+                                        WHERE p.id = '{id_p}'
+                                        """):
+                print(*value)
+    except Exception:
+        print('ID должен состоять из цифр!')
+        id()
+
+if __name__ == '__main__':
+    club()
+    players()
+    id()
+
+
+
+
+
